@@ -3,216 +3,149 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Giriş ve Kayıt Sayfası</title>
+<title>Halka Açık Veri Depolama Sistemi</title>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <style>
   body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
     margin: 0;
-    height: 100vh;
-    background-image: url('https://i.imgur.com/5FD5RqI.jpeg');
-    background-size: cover;
-    background-position: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 20px;
+  }
+
+  h1 {
+    text-align: center;
+    color: #333;
   }
 
   .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .auth-box {
-    background: rgba(0, 0, 0, 0.75);
-    padding: 50px;
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-    width: 350px;
-    color: #fff;
-    backdrop-filter: blur(10px);
-    transition: transform 0.3s, box-shadow 0.3s;
-    margin-bottom: 20px;
-  }
-
-  .auth-box:hover {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 30px rgba(255,255,255,0.6);
-  }
-
-  h2 {
-    text-align: center;
-    margin-bottom: 30px;
-    font-weight: 300;
-    letter-spacing: 2px;
-    font-size: 24px;
-  }
-
-  input[type="text"], input[type="password"], input[type="email"] {
-    width: 100%;
-    padding: 14px 20px;
-    margin: 10px 0;
-    border: none;
+    max-width: 800px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 20px;
     border-radius: 8px;
-    background-color: #222;
-    color: #fff;
-    font-size: 16px;
-    outline: none;
-    transition: box-shadow 0.3s, background-color 0.3s;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
   }
 
-  input[type="text"]:hover, input[type="password"]:hover,
-  input[type="email"]:hover,
-  input[type="text"]:focus, input[type="password"]:focus,
-  input[type="email"]:focus {
-    background-color: #333;
-    box-shadow: 0 0 10px #00ffff inset;
+  input[type="text"] {
+    width: calc(100% - 100px);
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
 
   button {
-    width: 100%;
-    padding: 14px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #00ffff, #008080);
-    color: #fff;
+    padding: 10px 20px;
     font-size: 16px;
+    margin-left: 10px;
+    border: none;
+    background-color: #28a745;
+    color: #fff;
+    border-radius: 4px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
   }
 
   button:hover {
-    box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff inset;
-    transform: scale(1.02);
+    background-color: #218838;
   }
 
-  #message {
-    width: 350px;
-    margin-top: 10px;
+  #duyurular {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+  }
+
+  #duyurular li {
+    background: #f8f9fa;
     padding: 10px;
-    border-radius: 8px;
-    display: none;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+
+  #duyurular li span {
+    display: block;
+  }
+
+  .footer {
     text-align: center;
-  }
-
-  #message.success {
-    background-color: #4CAF50;
-    color: white;
-  }
-
-  #message.error {
-    background-color: #f44336;
-    color: white;
-  }
-
-  .switch-link {
-    margin-top: 10px;
-    cursor: pointer;
-    color: #00ffff;
-    font-size: 14px;
-    text-decoration: underline;
+    margin-top: 40px;
+    color: #777;
   }
 </style>
 </head>
 <body>
 
+<h1>Halka Açık Veri Depolama Sistemi</h1>
 <div class="container">
-  <!-- Giriş Bölümü -->
-  <div class="auth-box" id="loginBox">
-    <h2>Giriş Yap</h2>
-    <form id="loginForm" action="#" method="POST">
-      <input type="text" placeholder="Kullanıcı Adı" name="kullanici" required />
-      <input type="password" placeholder="Şifre" name="sifre" required />
-      <button type="submit">Giriş</button>
-    </form>
-    <div class="switch-link" id="showRegister">Kayıt Olmak İçin Tıkla</div>
+  <div style="display:flex; margin-bottom:20px;">
+    <input type="text" id="mesajInput" placeholder="Yeni duyuru yazın..." />
+    <button onclick="duyuruEkle()">Ekle</button>
   </div>
 
-  <!-- Kayıt Ol Bölümü -->
-  <div class="auth-box" id="registerBox" style="display:none;">
-    <h2>Kayıt Ol</h2>
-    <form id="registerForm" action="#" method="POST">
-      <input type="text" placeholder="Kullanıcı Adı" name="kullanici" required />
-      <input type="email" placeholder="E-posta" name="email" required />
-      <input type="password" placeholder="Şifre" name="sifre" required />
-      <button type="submit">Kayıt Ol</button>
-    </form>
-    <div class="switch-link" id="showLogin">Zaten Hesabım Var</div>
-  </div>
-  <!-- Mesaj alanı -->
-  <div id="message"></div>
+  <h2>Mevcut Duyurular</h2>
+  <ul id="duyurular"></ul>
+</div>
+
+<div class="footer">
+  &copy; 2024 Halka Açık Veri Sistemi
 </div>
 
 <script>
-  const loginBox = document.getElementById('loginBox');
-  const registerBox = document.getElementById('registerBox');
-  const messageDiv = document.getElementById('message');
-
-  document.getElementById('showRegister').onclick = () => {
-    loginBox.style.display = 'none';
-    registerBox.style.display = 'block';
-    messageDiv.style.display = 'none';
-  };
-  document.getElementById('showLogin').onclick = () => {
-    loginBox.style.display = 'block';
-    registerBox.style.display = 'none';
-    messageDiv.style.display = 'none';
+  // Firebase yapılandırmanız
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9Vtxy4hUEssyC3rcmhTZp8u8S4hFooFs",
+    authDomain: "ogrencitoplulugi.firebaseapp.com",
+    projectId: "ogrencitoplulugi",
+    storageBucket: "ogrencitoplulugi.firebasestorage.app",
+    messagingSenderId: "681905707339",
+    appId: "1:681905707339:web:ac0c0cb2b874bb7c85b0ce",
+    measurementId: "G-QTMBL4Z9L3"
   };
 
-  let users = JSON.parse(localStorage.getItem('students')) || [];
+  // Firebase'i başlat
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
 
-  // Kayıt fonksiyonu
-  document.getElementById('registerForm').onsubmit = (e) => {
-    e.preventDefault();
-    const username = document.querySelector('#registerBox input[name="kullanici"]').value;
-    const email = document.querySelector('#registerBox input[name="email"]').value;
-    const password = document.querySelector('#registerBox input[name="sifre"]').value;
-
-    if (users.find(u => u.username === username)) {
-      showMessage('Bu kullanıcı adı alınmış!', 'error');
+  // Duyuru ekleme fonksiyonu
+  async function duyuruEkle() {
+    const mesaj = document.getElementById('mesajInput').value.trim();
+    if (mesaj === "") {
+      alert("Lütfen duyuru yazın!");
       return;
     }
-
-    users.push({ username, email, password });
-    localStorage.setItem('students', JSON.stringify(users));
-    showMessage('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');
-    setTimeout(() => {
-      loginBox.style.display = 'block';
-      registerBox.style.display = 'none';
-      clearMessage();
-    }, 1500);
-  };
-
-  // Giriş fonksiyonu
-  document.getElementById('loginForm').onsubmit = (e) => {
-    e.preventDefault();
-    const username = document.querySelector('#loginBox input[name="kullanici"]').value;
-    const password = document.querySelector('#loginBox input[name="sifre"]').value;
-
-    const user = users.find(u => u.username === username && u.password === password);
-    if (user) {
-      showMessage('Giriş başarılı! Hoşgeldiniz, ' + user.username, 'success');
-      setTimeout(() => {
-        // Başarılı girişten sonra yönlendirme
-        window.location.href = 'main.html';
-      }, 1000);
-    } else {
-      showMessage('Kullanıcı adı veya şifre hatalı!', 'error');
+    try {
+      await db.collection("duyurular").add({
+        mesaj: mesaj,
+        tarih: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      document.getElementById('mesajInput').value = "";
+      duyurularıGetir();
+    } catch (e) {
+      alert("Hata oluştu: " + e.message);
     }
-  };
-
-  function showMessage(msg, type) {
-    messageDiv.innerText = msg;
-    messageDiv.className = '';
-    messageDiv.classList.add(type);
-    messageDiv.style.display = 'block';
   }
 
-  function clearMessage() {
-    messageDiv.innerText = '';
-    messageDiv.style.display = 'none';
+  // Duyuruları getir ve listele
+  async function duyurularıGetir() {
+    const liste = document.getElementById('duyurular');
+    liste.innerHTML = "";
+    const q = db.collection("duyurular").orderBy("tarih", "desc");
+    const querySnapshot = await q.get();
+    querySnapshot.forEach((doc) => {
+      const duyuru = doc.data();
+      const li = document.createElement('li');
+      const tarih = duyuru.tarih ? duyuru.tarih.toDate().toLocaleString() : "Zaman bilinmiyor";
+      li.innerHTML = `<span>${duyuru.mesaj}</span><small>${tarih}</small>`;
+      liste.appendChild(li);
+    });
   }
+
+  // Sayfa yüklendiğinde duyuruları getir
+  window.onload = duyurularıGetir;
 </script>
 
 </body>
