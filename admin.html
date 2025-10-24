@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Paneli</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1e1e2f;
+    color: #fff;
+  }
+
+  /* Başlık ve üst menü */
+  .header {
+    background-color: #333;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+  }
+
+  /* Menü çubuğu */
+  .sidebar {
+    width: 220px;
+    height: calc(100vh - 50px);
+    background-color: #2c2f4a;
+    position: fixed;
+    top: 50px;
+    left: 0;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar button {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    text-align: left;
+    width: 100%;
+    font-size: 1.1em;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .sidebar button:hover {
+    background-color: #444;
+  }
+
+  /* Ana içerik alanı */
+  .content {
+    margin-left: 220px;
+    padding: 20px;
+    margin-top: 50px;
+    background-color: #1e1e2f;
+    min-height: calc(100vh - 50px);
+  }
+
+  /* Sekmeler ve içerik */
+  .section {
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  /* Basit formlar ve tablolar */
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    border-radius: 5px;
+    border: 1px solid #555;
+    background-color: #2c2f4a;
+    color: #fff;
+  }
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00ffff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  button:hover {
+    background-color: #00cccc;
+  }
+
+  /* Basit tablo */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 12px;
+    border: 1px solid #555;
+    text-align: left;
+  }
+
+  th {
+    background-color: #444;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">Yönetici Paneli</div>
+
+<div class="sidebar">
+  <button onclick="showSection('kullanicilar')">Kullanıcılar</button>
+  <button onclick="showSection('duyurular')">Duyurular</button>
+  <button onclick="showSection('ayarlari')">Ayarlar</button>
+</div>
+
+<div class="content">
+  <!-- Kullanıcılar Bölümü -->
+  <div id="kullanicilar" class="section active">
+    <h2>Kullanıcılar</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Kullanıcı Adı</th>
+          <th>Email</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody id="kullaniciTabloBody">
+        <!-- Dinamik doldurulur -->
+      </tbody>
+    </table>
+    <h3>Yeni Kullanıcı Ekle</h3>
+    <form id="kullaniciForm">
+      <input type="text" id="kullaniciAdiEkle" placeholder="Kullanıcı Adı" required />
+      <input type="text" id="kullaniciEmailEkle" placeholder="Email" required />
+      <button type="submit">Ekle</button>
+    </form>
+  </div>
+
+  <!-- Duyurular Bölümü -->
+  <div id="duyurular" class="section">
+    <h2>Duyurular</h2>
+    <ul id="duyuruList">
+      <!-- Duyurular listelenir -->
+    </ul>
+    <h3>Duyuru Ekle</h3>
+    <form id="duyuruForm">
+      <textarea id="duyuruMetni" rows="4" placeholder="Duyuru metni..." required></textarea>
+      <button type="submit">Ekle</button>
+    </form>
+  </div>
+
+  <!-- Ayarlar Bölümü -->
+  <div id="ayarlari" class="section">
+    <h2>Ayarlar</h2>
+    <p>Burada sistem ayarları yapılabilir.</p>
+  </div>
+</div>
+
+<script>
+  // Sayfa bölümlerini göster/gizle
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // Kullanıcılar listesi
+  let kullanicilar = [
+    {ad: 'Ali Veli', email: 'ali@example.com'},
+    {ad: 'Ayşe Kaya', email: 'ayse@example.com'}
+  ];
+
+  const kullaniciTabloBody = document.getElementById('kullaniciTabloBody');
+
+  function renderKullanicilar() {
+    kullaniciTabloBody.innerHTML = '';
+    kullanicilar.forEach((kullanici, index) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${kullanici.ad}</td>
+        <td>${kullanici.email}</td>
+        <td><button onclick="silKullanici(${index})">Sil</button></td>
+      `;
+      kullaniciTabloBody.appendChild(row);
+    });
+  }
+
+  function silKullanici(index) {
+    if(confirm('Silmek istediğinize emin misiniz?')) {
+      kullanicilar.splice(index,1);
+      renderKullanicilar();
+    }
+  }
+
+  document.getElementById('kullaniciForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const ad = document.getElementById('kullaniciAdiEkle').value;
+    const email = document.getElementById('kullaniciEmailEkle').value;
+    kullanicilar.push({ad, email});
+    renderKullanicilar();
+    this.reset();
+  });
+
+  // Duyurular listesi
+  let duyurular = [];
+
+  const duyuruList = document.getElementById('duyuruList');
+
+  function renderDuyurular() {
+    duyuruList.innerHTML = '';
+    duyurular.forEach((duyuru, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `${duyuru} <button onclick="silDuyuru(${index})">Sil</button>`;
+      duyuruList.appendChild(li);
+    });
+  }
+
+  function silDuyuru(index) {
+    if(confirm('Duyuruyu silmek istediğinize emin misiniz?')) {
+      duyurular.splice(index,1);
+      renderDuyurular();
+    }
+  }
+
+  document.getElementById('duyuruForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const metin = document.getElementById('duyuruMetni').value;
+    duyurular.push(metin);
+    renderDuyurular();
+    this.reset();
+  });
+
+  // Sayfa yüklendiğinde ilk render
+  window.onload = () => {
+    renderKullanicilar();
+    renderDuyurular();
+  };
+</script>
+
+</body>
+</html>
