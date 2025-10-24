@@ -3,305 +3,216 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ana Sayfa</title>
+<title>Giriş ve Kayıt Sayfası</title>
 <style>
   body {
     margin: 0;
     height: 100vh;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background-image: url('https://i.imgur.com/5FD5RqI.jpeg');
+    background-size: cover;
+    background-position: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Üst bar */
-  .top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    position: sticky;
-    top: 0;
-    z-index: 999;
-    backdrop-filter: blur(10px);
-  }
-
-  /* Sol taraf (İsim ve selam) */
-  .isimSelam {
     display: flex;
     align-items: center;
-    gap: 20px;
+    justify-content: center;
   }
 
-  /* Kullanıcı adı */
-  .kullaniciAdi {
-    font-size: 1.4em;
-    font-weight: bold;
-    color: #00ffff;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 8px;
-    transition: background 0.3s, color 0.3s;
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  .kullaniciAdi:hover {
-    background: rgba(0, 255, 255, 0.2);
+
+  .auth-box {
+    background: rgba(0, 0, 0, 0.75);
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    width: 350px;
     color: #fff;
-  }
-
-  /* Selamlama */
-  #gunesSelami {
-    font-size: 1.8em;
-    font-weight: bold;
-  }
-
-  /* Menü ikonu */
-  .menuIcon {
-    width: 30px;
-    height: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    cursor: pointer;
-    transition: transform 0.3s;
-  }
-
-  .menuIcon:hover {
-    transform: rotate(10deg);
-  }
-
-  .bar {
-    height: 3px;
-    background-color: #00ffff;
-    border-radius: 2px;
-    transition: all 0.3s;
-  }
-
-  /* Menü seçenekleri */
-  .menuOptions {
-    position: absolute;
-    top: 60px;
-    right: 40px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    display: none; /* başlangıçta görünmüyor */
-    flex-direction: column;
-    overflow: hidden;
     backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-    z-index: 1000;
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-bottom: 20px;
   }
 
-  .menuOptions.show {
-    display: flex;
+  .auth-box:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(255,255,255,0.6);
   }
 
-  .menuOptions button {
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    font-size: 24px;
+  }
+
+  input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
     padding: 14px 20px;
-    background: transparent;
+    margin: 10px 0;
     border: none;
+    border-radius: 8px;
+    background-color: #222;
     color: #fff;
-    font-size: 1.1em;
-    cursor: pointer;
-    width: 220px;
-    text-align: left;
+    font-size: 16px;
+    outline: none;
+    transition: box-shadow 0.3s, background-color 0.3s;
   }
 
-  .menuOptions button:hover {
-    background: rgba(255,255,255,0.2);
-    transform: translateX(5px);
+  input[type="text"]:hover, input[type="password"]:hover,
+  input[type="email"]:hover,
+  input[type="text"]:focus, input[type="password"]:focus,
+  input[type="email"]:focus {
+    background-color: #333;
+    box-shadow: 0 0 10px #00ffff inset;
   }
 
-  /* Notlar ve Duyuru bölgesi */
-  .notlarContainer {
-    position: sticky;
-    top: 80px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 998;
-  }
-
-  .notlar {
-    max-width: 900px;
-    background: rgba(255,255,255,0.05);
-    padding: 30px 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    font-size: 1.3em;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #fff;
-    transition: all 0.3s ease;
+  button {
     width: 100%;
-    opacity: 0;
-    animation: fadeIn 1s forwards;
-  }
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
-  }
-
-  /* Duyuru bölümü */
-  .duyuru {
+    padding: 14px;
     margin-top: 20px;
-    padding: 15px;
-    width: 100%;
-    max-width: 900px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 12px;
-    font-size: 1.2em;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #00ffff, #008080);
     color: #fff;
-  }
-  .duyuru h3 {
-    margin-top: 0;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
   }
 
-  /* Responsive */
-  @media(max-width: 600px) {
-    .top-bar {
-      flex-direction: column;
-      align-items: center;
-      padding: 15px 20px;
-    }
-    .kullaniciAdi {
-      font-size: 1.2em;
-    }
-    #gunesSelami {
-      font-size: 1.5em;
-    }
-    .menuIcon {
-      width: 25px;
-      height: 20px;
-    }
-    .menuOptions {
-      right: 20px;
-      top: 70px;
-    }
+  button:hover {
+    box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff inset;
+    transform: scale(1.02);
+  }
+
+  #message {
+    width: 350px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+    text-align: center;
+  }
+
+  #message.success {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  #message.error {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .switch-link {
+    margin-top: 10px;
+    cursor: pointer;
+    color: #00ffff;
+    font-size: 14px;
+    text-decoration: underline;
   }
 </style>
 </head>
 <body>
 
-<!-- Üst bilgi -->
-<div class="top-bar">
-  <div class="isimSelam">
-    <!-- Avatar kaldırıldı -->
-    <div class="kullaniciContainer" id="kullaniciContainer">
-      <div class="kullaniciAdi" id="kullaniciAdi">Kullanıcı</div>
-      <div class="profilKutu" id="profilKutu">
-        <h3 style="margin:0 0 10px 0;">Hoş Geldiniz!</h3>
-        <p>Burada profil bilgileri veya kısa bir mesaj olabilir.</p>
-        <button onclick="window.location.href='profil.html'; event.stopPropagation();"
-          style="margin-top:10px; padding:8px 12px; border:none; border-radius:5px; background:#00ffff; color:#000; cursor:pointer;">Profili Görüntüle</button>
-      </div>
-    </div>
-    <div id="gunesSelami"></div>
+<div class="container">
+  <!-- Giriş Bölümü -->
+  <div class="auth-box" id="loginBox">
+    <h2>Giriş Yap</h2>
+    <form id="loginForm" action="#" method="POST">
+      <input type="text" placeholder="Kullanıcı Adı" name="kullanici" required />
+      <input type="password" placeholder="Şifre" name="sifre" required />
+      <button type="submit">Giriş</button>
+    </form>
+    <div class="switch-link" id="showRegister">Kayıt Olmak İçin Tıkla</div>
   </div>
-  <!-- Menü ikonu -->
-  <div class="menuIcon" id="menuIcon">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-  </div>
-</div>
 
-<!-- Menü seçenekleri -->
-<div class="menuOptions" id="menuOptions">
-  <button onclick="alert('Sohbet')">Sohbet</button>
-  <button onclick="alert('Yardımlaşma')">Yardımlaşma</button>
-  <button onclick="alert('Şikayet')">Şikayet</button>
-  <button onclick="alert('Öneri')">Öneri</button>
-  <hr style="margin:10px 0; border-color:#555;">
-  <button onclick="alert('Yapay Zeka')">Yapay Zeka</button>
-  <button onclick="alert('Pazar')">Pazar</button>
-</div>
-
-<!-- Notlar ve Duyuru bölgesi -->
-<div class="notlarContainer">
-  <div class="notlar" id="bilgiNotlari">
-    Öğrencilere özel bilgi notları burada gösterilecek.
+  <!-- Kayıt Ol Bölümü -->
+  <div class="auth-box" id="registerBox" style="display:none;">
+    <h2>Kayıt Ol</h2>
+    <form id="registerForm" action="#" method="POST">
+      <input type="text" placeholder="Kullanıcı Adı" name="kullanici" required />
+      <input type="email" placeholder="E-posta" name="email" required />
+      <input type="password" placeholder="Şifre" name="sifre" required />
+      <button type="submit">Kayıt Ol</button>
+    </form>
+    <div class="switch-link" id="showLogin">Zaten Hesabım Var</div>
   </div>
-  <!-- Duyuru kısmı -->
-  <div class="duyuru" id="duyuru">
-    <h3>Duyuru</h3>
-    <p>Buraya önemli duyuru veya haberleri ekleyebilirsiniz.</p>
-  </div>
+  <!-- Mesaj alanı -->
+  <div id="message"></div>
 </div>
 
 <script>
-  // Kullanıcı adı
-  const kullaniciAdi = localStorage.getItem('kullaniciAdi') || 'Misafir';
-  document.getElementById('kullaniciAdi').innerText = kullaniciAdi;
+  const loginBox = document.getElementById('loginBox');
+  const registerBox = document.getElementById('registerBox');
+  const messageDiv = document.getElementById('message');
 
-  // Selamlama fonksiyonu
-  function selamla() {
-    const now = new Date();
-    const hours = now.getHours();
-    let selam = '';
+  document.getElementById('showRegister').onclick = () => {
+    loginBox.style.display = 'none';
+    registerBox.style.display = 'block';
+    messageDiv.style.display = 'none';
+  };
+  document.getElementById('showLogin').onclick = () => {
+    loginBox.style.display = 'block';
+    registerBox.style.display = 'none';
+    messageDiv.style.display = 'none';
+  };
 
-    if (hours >= 5 && hours < 12) {
-      selam = 'Günaydın!';
-    } else if (hours >= 12 && hours < 18) {
-      selam = 'İyi günler!';
-    } else if (hours >= 18 && hours < 22) {
-      selam = 'İyi akşamlar!';
-    } else {
-      selam = 'İyi geceler!';
+  let users = JSON.parse(localStorage.getItem('students')) || [];
+
+  // Kayıt fonksiyonu
+  document.getElementById('registerForm').onsubmit = (e) => {
+    e.preventDefault();
+    const username = document.querySelector('#registerBox input[name="kullanici"]').value;
+    const email = document.querySelector('#registerBox input[name="email"]').value;
+    const password = document.querySelector('#registerBox input[name="sifre"]').value;
+
+    if (users.find(u => u.username === username)) {
+      showMessage('Bu kullanıcı adı alınmış!', 'error');
+      return;
     }
 
-    document.getElementById('gunesSelami').innerText = selam;
+    users.push({ username, email, password });
+    localStorage.setItem('students', JSON.stringify(users));
+    showMessage('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');
+    setTimeout(() => {
+      loginBox.style.display = 'block';
+      registerBox.style.display = 'none';
+      clearMessage();
+    }, 1500);
+  };
+
+  // Giriş fonksiyonu
+  document.getElementById('loginForm').onsubmit = (e) => {
+    e.preventDefault();
+    const username = document.querySelector('#loginBox input[name="kullanici"]').value;
+    const password = document.querySelector('#loginBox input[name="sifre"]').value;
+
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+      showMessage('Giriş başarılı! Hoşgeldiniz, ' + user.username, 'success');
+      setTimeout(() => {
+        // Başarılı girişten sonra yönlendirme
+        window.location.href = 'main.html';
+      }, 1000);
+    } else {
+      showMessage('Kullanıcı adı veya şifre hatalı!', 'error');
+    }
+  };
+
+  function showMessage(msg, type) {
+    messageDiv.innerText = msg;
+    messageDiv.className = '';
+    messageDiv.classList.add(type);
+    messageDiv.style.display = 'block';
   }
 
-  selamla();
-
-  // Notlar listesi
-  const notlarListesi = [
-    "Matematikte yeni konu: Fonksiyonlar. Öğrenmeye hazır olun!",
-    "Türkçe'de anlatım bozukluklarına dikkat edin.",
-    "Fen Bilimleri: Canlılar ve Ekosistemler hakkında bilgi edinin.",
-    "Tarih: Osmanlı Devleti'nin önemli olayları.",
-    "İngilizce pratik yapmayı unutmayın!",
-    "Motivasyon: Her gün yeni bir şeyler öğrenin.",
-    "Sağlıklı yaşam için düzenli uyuyun ve su içmeyi ihmal etmeyin.",
-    "Düzenli tekrar, başarılı olmanın anahtarıdır.",
-    "Çalışmalarınıza düzenli zaman ayırın.",
-    "Başarı, azim ve kararlılıkla gelir."
-  ];
-
-  let notIndex = 0;
-
-  function gösterNot() {
-    document.getElementById('bilgiNotlari').innerText = notlarListesi[notIndex];
-    notIndex = (notIndex + 1) % notlarListesi.length;
+  function clearMessage() {
+    messageDiv.innerText = '';
+    messageDiv.style.display = 'none';
   }
-
-  gösterNot();
-  setInterval(gösterNot, 1800 * 1000);
-
-  // Menü toggle fonksiyonu
-  const menuButton = document.getElementById('menuIcon');
-  const menuOptions = document.getElementById('menuOptions');
-
-  function toggleMenu(e) {
-    e.stopPropagation();
-    menuOptions.classList.toggle('show');
-  }
-
-  // Menü ikonuna tıklama olayı ekle
-  if (menuButton) {
-    menuButton.addEventListener('click', toggleMenu);
-  }
-
-  // Sayfa herhangi bir yere tıklandığında menüyü kapat
-  document.addEventListener('click', () => {
-    menuOptions.classList.remove('show');
-  });
 </script>
 
 </body>
