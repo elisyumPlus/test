@@ -162,6 +162,19 @@
     margin-top: 0;
   }
 
+  /* Duyurular listesi */
+  #duyuruListe {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  #duyuruListe li {
+    background: rgba(255,255,255,0.2);
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
   /* Responsive */
   @media(max-width: 600px) {
     .top-bar {
@@ -230,7 +243,9 @@
   <!-- Duyuru kısmı -->
   <div class="duyuru" id="duyuru">
     <h3>Duyuru</h3>
-    <p>Buraya önemli duyuru veya haberleri ekleyebilirsiniz.</p>
+    <ul id="duyuruListe">
+      <!-- Duyurular burada listelenecek -->
+    </ul>
   </div>
 </div>
 
@@ -260,31 +275,38 @@
 
   selamla();
 
-  // Notlar listesi
-  const notlarListesi = [
-    "Matematikte yeni konu: Fonksiyonlar. Öğrenmeye hazır olun!",
-    "Türkçe'de anlatım bozukluklarına dikkat edin.",
-    "Fen Bilimleri: Canlılar ve Ekosistemler hakkında bilgi edinin.",
-    "Tarih: Osmanlı Devleti'nin önemli olayları.",
-    "İngilizce pratik yapmayı unutmayın!",
-    "Motivasyon: Her gün yeni bir şeyler öğrenin.",
-    "Sağlıklı yaşam için düzenli uyuyun ve su içmeyi ihmal etmeyin.",
-    "Düzenli tekrar, başarılı olmanın anahtarıdır.",
-    "Çalışmalarınıza düzenli zaman ayırın.",
-    "Başarı, azim ve kararlılıkla gelir."
-  ];
+  // Duyurular dizisi
+  let duyurular = [];
 
-  let notIndex = 0;
+  const duyuruListe = document.getElementById('duyuruListe');
 
-  function gösterNot() {
-    document.getElementById('bilgiNotlari').innerText = notlarListesi[notIndex];
-    notIndex = (notIndex + 1) % notlarListesi.length;
+  function renderDuyurular() {
+    duyuruListe.innerHTML = '';
+    duyurular.forEach((duyuru, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `${duyuru} <button onclick="silDuyuru(${index})">Sil</button>`;
+      duyuruListe.appendChild(li);
+    });
   }
 
-  gösterNot();
-  setInterval(gösterNot, 1800 * 1000);
+  function silDuyuru(index) {
+    if (confirm('Duyuruyu silmek istediğinize emin misiniz?')) {
+      duyurular.splice(index, 1);
+      renderDuyurular();
+    }
+  }
 
-  // Menü toggle fonksiyonu
+  document.getElementById('duyuruForm')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const metin = document.getElementById('duyuruMetni')?.value;
+    if (metin) {
+      duyurular.push(metin);
+      renderDuyurular();
+      document.getElementById('duyuruMetni').value = '';
+    }
+  });
+
+  // Menü toggle
   const menuButton = document.getElementById('menuIcon');
   const menuOptions = document.getElementById('menuOptions');
 
@@ -293,15 +315,41 @@
     menuOptions.classList.toggle('show');
   }
 
-  // Menü ikonuna tıklama olayı ekle
   if (menuButton) {
     menuButton.addEventListener('click', toggleMenu);
   }
 
-  // Sayfa herhangi bir yere tıklandığında menüyü kapat
   document.addEventListener('click', () => {
     menuOptions.classList.remove('show');
   });
+
+  // Admin giriş ve duyuru ekleme
+  let adminDuyurular = [];
+
+  // Giriş şifresi
+  const adminSifre = 'test123';
+
+  // Admin giriş yapınca duyuruları ana sayfaya ekle
+  function adminGiris() {
+    const sifre = prompt('Admin şifresini girin:');
+    if (sifre === adminSifre) {
+      alert('Admin giriş başarılı!');
+      // Admin duyuru ekleme
+      const yeniDuyuru = prompt('Yeni duyuru metni:');
+      if (yeniDuyuru) {
+        duyurular.push(yeniDuyuru);
+        renderDuyurular();
+      }
+    } else {
+      alert('Yanlış şifre!');
+    }
+  }
+
+  // Sayfa ilk yüklendiğinde duyuruları göster
+  window.onload = () => {
+    selamla();
+    renderDuyurular();
+  };
 </script>
 
 </body>
