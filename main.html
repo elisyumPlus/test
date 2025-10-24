@@ -8,17 +8,301 @@
   body {
     margin: 0;
     height: 100vh;
-    background-color: #000; /* Soft siyah arka plan */
-    color: #fff;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Üst bar */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    backdrop-filter: blur(10px);
+  }
+
+  /* Sol taraf (İsim ve selam) */
+  .isimSelam {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 24px;
+    gap: 20px;
+  }
+
+  /* Kullanıcı adı */
+  .kullaniciAdi {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #00ffff;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: background 0.3s, color 0.3s;
+  }
+  .kullaniciAdi:hover {
+    background: rgba(0, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  /* Selamlama */
+  #gunesSelami {
+    font-size: 1.8em;
+    font-weight: bold;
+  }
+
+  /* Menü ikonu */
+  .menuIcon {
+    width: 30px;
+    height: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: transform 0.3s;
+  }
+
+  .menuIcon:hover {
+    transform: rotate(10deg);
+  }
+
+  .bar {
+    height: 3px;
+    background-color: #00ffff;
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* Menü seçenekleri */
+  .menuOptions {
+    position: absolute;
+    top: 60px;
+    right: 40px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    display: none; /* başlangıçta görünmüyor */
+    flex-direction: column;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .menuOptions.show {
+    display: flex;
+  }
+
+  .menuOptions button {
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.1em;
+    cursor: pointer;
+    width: 220px;
+    text-align: left;
+  }
+
+  .menuOptions button:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateX(5px);
+  }
+
+  /* Notlar ve Duyuru bölgesi */
+  .notlarContainer {
+    position: sticky;
+    top: 80px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 998;
+  }
+
+  .notlar {
+    max-width: 900px;
+    background: rgba(255,255,255,0.05);
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    font-size: 1.3em;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    transition: all 0.3s ease;
+    width: 100%;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Duyuru bölümü */
+  .duyuru {
+    margin-top: 20px;
+    padding: 15px;
+    width: 100%;
+    max-width: 900px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    font-size: 1.2em;
+    color: #fff;
+  }
+  .duyuru h3 {
+    margin-top: 0;
+  }
+
+  /* Responsive */
+  @media(max-width: 600px) {
+    .top-bar {
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 20px;
+    }
+    .kullaniciAdi {
+      font-size: 1.2em;
+    }
+    #gunesSelami {
+      font-size: 1.5em;
+    }
+    .menuIcon {
+      width: 25px;
+      height: 20px;
+    }
+    .menuOptions {
+      right: 20px;
+      top: 70px;
+    }
   }
 </style>
 </head>
 <body>
-  <h1>Hoşgeldiniz!</h1>
+
+<!-- Üst bilgi -->
+<div class="top-bar">
+  <div class="isimSelam">
+    <!-- Avatar kaldırıldı -->
+    <div class="kullaniciContainer" id="kullaniciContainer">
+      <div class="kullaniciAdi" id="kullaniciAdi">Kullanıcı</div>
+      <div class="profilKutu" id="profilKutu">
+        <h3 style="margin:0 0 10px 0;">Hoş Geldiniz!</h3>
+        <p>Burada profil bilgileri veya kısa bir mesaj olabilir.</p>
+        <button onclick="window.location.href='profil.html'; event.stopPropagation();"
+          style="margin-top:10px; padding:8px 12px; border:none; border-radius:5px; background:#00ffff; color:#000; cursor:pointer;">Profili Görüntüle</button>
+      </div>
+    </div>
+    <div id="gunesSelami"></div>
+  </div>
+  <!-- Menü ikonu -->
+  <div class="menuIcon" id="menuIcon">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
+  </div>
+</div>
+
+<!-- Menü seçenekleri -->
+<div class="menuOptions" id="menuOptions">
+  <button onclick="alert('Sohbet')">Sohbet</button>
+  <button onclick="alert('Yardımlaşma')">Yardımlaşma</button>
+  <button onclick="alert('Şikayet')">Şikayet</button>
+  <button onclick="alert('Öneri')">Öneri</button>
+  <hr style="margin:10px 0; border-color:#555;">
+  <button onclick="alert('Yapay Zeka')">Yapay Zeka</button>
+  <button onclick="alert('Pazar')">Pazar</button>
+</div>
+
+<!-- Notlar ve Duyuru bölgesi -->
+<div class="notlarContainer">
+  <div class="notlar" id="bilgiNotlari">
+    Öğrencilere özel bilgi notları burada gösterilecek.
+  </div>
+  <!-- Duyuru kısmı -->
+  <div class="duyuru" id="duyuru">
+    <h3>Duyuru</h3>
+    <p>Buraya önemli duyuru veya haberleri ekleyebilirsiniz.</p>
+  </div>
+</div>
+
+<script>
+  // Kullanıcı adı
+  const kullaniciAdi = localStorage.getItem('kullaniciAdi') || 'Misafir';
+  document.getElementById('kullaniciAdi').innerText = kullaniciAdi;
+
+  // Selamlama fonksiyonu
+  function selamla() {
+    const now = new Date();
+    const hours = now.getHours();
+    let selam = '';
+
+    if (hours >= 5 && hours < 12) {
+      selam = 'Günaydın!';
+    } else if (hours >= 12 && hours < 18) {
+      selam = 'İyi günler!';
+    } else if (hours >= 18 && hours < 22) {
+      selam = 'İyi akşamlar!';
+    } else {
+      selam = 'İyi geceler!';
+    }
+
+    document.getElementById('gunesSelami').innerText = selam;
+  }
+
+  selamla();
+
+  // Notlar listesi
+  const notlarListesi = [
+    "Matematikte yeni konu: Fonksiyonlar. Öğrenmeye hazır olun!",
+    "Türkçe'de anlatım bozukluklarına dikkat edin.",
+    "Fen Bilimleri: Canlılar ve Ekosistemler hakkında bilgi edinin.",
+    "Tarih: Osmanlı Devleti'nin önemli olayları.",
+    "İngilizce pratik yapmayı unutmayın!",
+    "Motivasyon: Her gün yeni bir şeyler öğrenin.",
+    "Sağlıklı yaşam için düzenli uyuyun ve su içmeyi ihmal etmeyin.",
+    "Düzenli tekrar, başarılı olmanın anahtarıdır.",
+    "Çalışmalarınıza düzenli zaman ayırın.",
+    "Başarı, azim ve kararlılıkla gelir."
+  ];
+
+  let notIndex = 0;
+
+  function gösterNot() {
+    document.getElementById('bilgiNotlari').innerText = notlarListesi[notIndex];
+    notIndex = (notIndex + 1) % notlarListesi.length;
+  }
+
+  gösterNot();
+  setInterval(gösterNot, 1800 * 1000);
+
+  // Menü toggle fonksiyonu
+  const menuButton = document.getElementById('menuIcon');
+  const menuOptions = document.getElementById('menuOptions');
+
+  function toggleMenu(e) {
+    e.stopPropagation();
+    menuOptions.classList.toggle('show');
+  }
+
+  // Menü ikonuna tıklama olayı ekle
+  if (menuButton) {
+    menuButton.addEventListener('click', toggleMenu);
+  }
+
+  // Sayfa herhangi bir yere tıklandığında menüyü kapat
+  document.addEventListener('click', () => {
+    menuOptions.classList.remove('show');
+  });
+</script>
+
 </body>
 </html>
