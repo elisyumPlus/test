@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Giriş ve Kayıt Sayfası</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background-image: url('https://i.imgur.com/5FD5RqI.jpeg');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .auth-box {
+    background: rgba(0, 0, 0, 0.75);
+    padding: 50px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    width: 350px;
+    color: #fff;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, box-shadow 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .auth-box:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(255,255,255,0.6);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    font-size: 24px;
+  }
+
+  input[type="text"], input[type="password"], input[type="email"] {
+    width: 100%;
+    padding: 14px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 8px;
+    background-color: #222;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: box-shadow 0.3s, background-color 0.3s;
+  }
+
+  input[type="text"]:hover, input[type="password"]:hover,
+  input[type="email"]:hover,
+  input[type="text"]:focus, input[type="password"]:focus,
+  input[type="email"]:focus {
+    background-color: #333;
+    box-shadow: 0 0 10px #00ffff inset;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #00ffff, #008080);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  button:hover {
+    box-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff inset;
+    transform: scale(1.02);
+  }
+
+  #message {
+    width: 350px;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+    text-align: center;
+  }
+
+  #message.success {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  #message.error {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .switch-link {
+    margin-top: 10px;
+    cursor: pointer;
+    color: #00ffff;
+    font-size: 14px;
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Giriş Bölümü -->
+  <div class="auth-box" id="loginBox">
+    <h2>Giriş Yap</h2>
+    <form id="loginForm" action="#" method="POST">
+      <input type="text" placeholder="Kullanıcı Adı" name="kullanici" required />
+      <input type="password" placeholder="Şifre" name="sifre" required />
+      <button type="submit">Giriş</button>
+    </form>
+    <div class="switch-link" id="showRegister">Kayıt Olmak İçin Tıkla</div>
+  </div>
+
+  <!-- Kayıt Ol Bölümü -->
+  <div class="auth-box" id="registerBox" style="display:none;">
+    <h2>Kayıt Ol</h2>
+    <form id="registerForm" action="#" method="POST">
+      <input type="text" placeholder="Kullanıcı Adı" name="kullanici" required />
+      <input type="email" placeholder="E-posta" name="email" required />
+      <input type="password" placeholder="Şifre" name="sifre" required />
+      <button type="submit">Kayıt Ol</button>
+    </form>
+    <div class="switch-link" id="showLogin">Zaten Hesabım Var</div>
+  </div>
+  <!-- Mesaj alanı -->
+  <div id="message"></div>
+</div>
+
+<script>
+  const loginBox = document.getElementById('loginBox');
+  const registerBox = document.getElementById('registerBox');
+  const messageDiv = document.getElementById('message');
+
+  document.getElementById('showRegister').onclick = () => {
+    loginBox.style.display = 'none';
+    registerBox.style.display = 'block';
+    messageDiv.style.display = 'none';
+  };
+  document.getElementById('showLogin').onclick = () => {
+    loginBox.style.display = 'block';
+    registerBox.style.display = 'none';
+    messageDiv.style.display = 'none';
+  };
+
+  let users = JSON.parse(localStorage.getItem('students')) || [];
+
+  // Kayıt fonksiyonu
+  document.getElementById('registerForm').onsubmit = (e) => {
+    e.preventDefault();
+    const username = document.querySelector('#registerBox input[name="kullanici"]').value;
+    const email = document.querySelector('#registerBox input[name="email"]').value;
+    const password = document.querySelector('#registerBox input[name="sifre"]').value;
+
+    if (users.find(u => u.username === username)) {
+      showMessage('Bu kullanıcı adı alınmış!', 'error');
+      return;
+    }
+
+    users.push({ username, email, password });
+    localStorage.setItem('students', JSON.stringify(users));
+    showMessage('Kayıt başarılı! Giriş yapabilirsiniz.', 'success');
+    setTimeout(() => {
+      loginBox.style.display = 'block';
+      registerBox.style.display = 'none';
+      clearMessage();
+    }, 1500);
+  };
+
+  // Giriş fonksiyonu
+  document.getElementById('loginForm').onsubmit = (e) => {
+    e.preventDefault();
+    const username = document.querySelector('#loginBox input[name="kullanici"]').value;
+    const password = document.querySelector('#loginBox input[name="sifre"]').value;
+
+    const user = users.find(u => u.username === username && u.password === password);
+    if (user) {
+      showMessage('Giriş başarılı! Hoşgeldiniz, ' + user.username, 'success');
+      setTimeout(() => {
+        // Başarılı girişten sonra yönlendirme
+        window.location.href = 'main.html';
+      }, 1000);
+    } else {
+      showMessage('Kullanıcı adı veya şifre hatalı!', 'error');
+    }
+  };
+
+  function showMessage(msg, type) {
+    messageDiv.innerText = msg;
+    messageDiv.className = '';
+    messageDiv.classList.add(type);
+    messageDiv.style.display = 'block';
+  }
+
+  function clearMessage() {
+    messageDiv.innerText = '';
+    messageDiv.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
