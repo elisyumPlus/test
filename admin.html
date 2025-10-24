@@ -69,7 +69,7 @@
   }
 
   /* Basit formlar ve tablolar */
-  input[type="text"], textarea {
+  input[type="text"], textarea, input[type="password"] {
     width: 100%;
     padding: 8px;
     margin-top: 8px;
@@ -113,6 +113,16 @@
 </style>
 </head>
 <body>
+
+<!-- Admin giriş ekranı -->
+<div id="adminGiris" style="position:fixed; top:0; left:0; right:0; bottom:0; background: rgba(0,0,0,0.8); display:flex; justify-content:center; align-items:center; z-index:2000;">
+  <div style="background:#222; padding:30px; border-radius:15px; text-align:center;">
+    <h2>Admin Girişi</h2>
+    <input type="password" id="adminGirisInput" placeholder="Şifre" />
+    <br />
+    <button id="adminGirisBtn">Giriş</button>
+  </div>
+</div>
 
 <div class="header">Yönetici Paneli</div>
 
@@ -173,44 +183,18 @@
     document.getElementById(id).classList.add('active');
   }
 
-  // Kullanıcılar listesi
-  let kullanicilar = [
-    {ad: 'Ali Veli', email: 'ali@example.com'},
-    {ad: 'Ayşe Kaya', email: 'ayse@example.com'}
-  ];
-
-  const kullaniciTabloBody = document.getElementById('kullaniciTabloBody');
-
-  function renderKullanicilar() {
-    kullaniciTabloBody.innerHTML = '';
-    kullanicilar.forEach((kullanici, index) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${kullanici.ad}</td>
-        <td>${kullanici.email}</td>
-        <td><button onclick="silKullanici(${index})">Sil</button></td>
-      `;
-      kullaniciTabloBody.appendChild(row);
-    });
-  }
-
-  function silKullanici(index) {
-    if(confirm('Silmek istediğinize emin misiniz?')) {
-      kullanicilar.splice(index,1);
-      renderKullanicilar();
+  // Admin giriş kontrolü
+  document.getElementById('adminGirisBtn').addEventListener('click', () => {
+    const sifre = document.getElementById('adminGirisInput').value;
+    if(sifre === 'test123'){
+      alert('Admin giriş başarılı!');
+      document.getElementById('adminGiris').style.display = 'none';
+    } else {
+      alert('Yanlış şifre!');
     }
-  }
-
-  document.getElementById('kullaniciForm').addEventListener('submit', function(e){
-    e.preventDefault();
-    const ad = document.getElementById('kullaniciAdiEkle').value;
-    const email = document.getElementById('kullaniciEmailEkle').value;
-    kullanicilar.push({ad, email});
-    renderKullanicilar();
-    this.reset();
   });
 
-  // Duyurular listesi
+  // Duyuruları ana sayfada gösterecek liste
   let duyurular = [];
 
   const duyuruList = document.getElementById('duyuruList');
@@ -219,7 +203,7 @@
     duyuruList.innerHTML = '';
     duyurular.forEach((duyuru, index) => {
       const li = document.createElement('li');
-      li.innerHTML = `${duyuru} <button onclick="silDuyuru(${index})">Sil</button>`;
+      li.innerHTML = duyuru + ' <button onclick="silDuyuru(' + index + ')">Sil</button>';
       duyuruList.appendChild(li);
     });
   }
@@ -231,12 +215,49 @@
     }
   }
 
-  document.getElementById('duyuruForm').addEventListener('submit', function(e){
+  document.getElementById('duyuruForm').addEventListener('submit', e => {
     e.preventDefault();
     const metin = document.getElementById('duyuruMetni').value;
     duyurular.push(metin);
     renderDuyurular();
-    this.reset();
+    e.target.reset();
+  });
+
+  // Kullanıcılar listeleme ve ekleme
+  let kullanicilar = [
+    {ad: 'Ali Veli', email: 'ali@example.com'},
+    {ad: 'Ayşe Kaya', email: 'ayse@example.com'}
+  ];
+
+  const kullaniciTabloBody = document.getElementById('kullaniciTabloBody');
+
+  function renderKullanicilar() {
+    kullaniciTabloBody.innerHTML = '';
+    kullanicilar.forEach((k, i) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${k.ad}</td>
+        <td>${k.email}</td>
+        <td><button onclick="silKullanici(${i})">Sil</button></td>
+      `;
+      kullaniciTabloBody.appendChild(row);
+    });
+  }
+
+  function silKullanici(i) {
+    if(confirm('Silmek istediğinize emin misiniz?')) {
+      kullanicilar.splice(i,1);
+      renderKullanicilar();
+    }
+  }
+
+  document.getElementById('kullaniciForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const ad = document.getElementById('kullaniciAdiEkle').value;
+    const email = document.getElementById('kullaniciEmailEkle').value;
+    kullanicilar.push({ad, email});
+    renderKullanicilar();
+    e.target.reset();
   });
 
   // Sayfa yüklendiğinde ilk render
@@ -245,6 +266,5 @@
     renderDuyurular();
   };
 </script>
-
 </body>
 </html>
