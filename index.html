@@ -70,10 +70,10 @@
     display: block;
   }
 
-  .footer {
-    text-align: center;
-    margin-top: 40px;
-    color: #777;
+  #duyurular li small {
+    display: block;
+    margin-top: 5px;
+    color: #555;
   }
 </style>
 </head>
@@ -88,10 +88,6 @@
 
   <h2>Mevcut Duyurular</h2>
   <ul id="duyurular"></ul>
-</div>
-
-<div class="footer">
-  &copy; 2024 Halka Açık Veri Sistemi
 </div>
 
 <script>
@@ -125,6 +121,7 @@
       document.getElementById('mesajInput').value = "";
       duyurularıGetir();
     } catch (e) {
+      console.error("Hata oluştu:", e);
       alert("Hata oluştu: " + e.message);
     }
   }
@@ -133,15 +130,19 @@
   async function duyurularıGetir() {
     const liste = document.getElementById('duyurular');
     liste.innerHTML = "";
-    const q = db.collection("duyurular").orderBy("tarih", "desc");
-    const querySnapshot = await q.get();
-    querySnapshot.forEach((doc) => {
-      const duyuru = doc.data();
-      const li = document.createElement('li');
-      const tarih = duyuru.tarih ? duyuru.tarih.toDate().toLocaleString() : "Zaman bilinmiyor";
-      li.innerHTML = `<span>${duyuru.mesaj}</span><small>${tarih}</small>`;
-      liste.appendChild(li);
-    });
+    try {
+      const q = db.collection("duyurular").orderBy("tarih", "desc");
+      const querySnapshot = await q.get();
+      querySnapshot.forEach((doc) => {
+        const duyuru = doc.data();
+        const li = document.createElement('li');
+        const tarih = duyuru.tarih ? duyuru.tarih.toDate().toLocaleString() : "Zaman bilinmiyor";
+        li.innerHTML = `<span>${duyuru.mesaj}</span><small>${tarih}</small>`;
+        liste.appendChild(li);
+      });
+    } catch (e) {
+      console.error("Duyuruları getirirken hata oluştu:", e);
+    }
   }
 
   // Sayfa yüklendiğinde duyuruları getir
