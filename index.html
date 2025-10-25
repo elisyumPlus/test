@@ -1,153 +1,69 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Halka Açık Veri Depolama Sistemi</title>
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 20px;
-  }
-
-  h1 {
-    text-align: center;
-    color: #333;
-  }
-
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-
-  input[type="text"] {
-    width: calc(100% - 100px);
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin-left: 10px;
-    border: none;
-    background-color: #28a745;
-    color: #fff;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  button:hover {
-    background-color: #218838;
-  }
-
-  #duyurular {
-    margin-top: 20px;
-    list-style: none;
-    padding: 0;
-  }
-
-  #duyurular li {
-    background: #f8f9fa;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-  }
-
-  #duyurular li span {
-    display: block;
-  }
-
-  #duyurular li small {
-    display: block;
-    margin-top: 5px;
-    color: #555;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>Firebase Kullanıcı Kaydı ve Giriş</title>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
 </head>
 <body>
+  <h2>Kayıt Ol</h2>
+  <input type="email" id="registerEmail" placeholder="E-posta" /><br/><br/>
+  <input type="password" id="registerPassword" placeholder="Şifre" /><br/><br/>
+  <button onclick="register()">Kayıt Ol</button>
 
-<h1>Halka Açık Veri Depolama Sistemi</h1>
-<div class="container">
-  <div style="display:flex; margin-bottom:20px;">
-    <input type="text" id="mesajInput" placeholder="Yeni duyuru yazın..." />
-    <button onclick="duyuruEkle()">Ekle</button>
-  </div>
+  <h2>Giriş Yap</h2>
+  <input type="email" id="loginEmail" placeholder="E-posta" /><br/><br/>
+  <input type="password" id="loginPassword" placeholder="Şifre" /><br/><br/>
+  <button onclick="login()">Giriş Yap</button>
 
-  <h2>Mevcut Duyurular</h2>
-  <ul id="duyurular"></ul>
-</div>
+  <script>
+    // Firebase yapılandırması
+    const firebaseConfig = {
+      apiKey: "AIzaSyBnFnFj11kET9KXmzCGq0zx2CQ4fjE3kXg",
+      authDomain: "topluluk-237d8.firebaseapp.com",
+      projectId: "topluluk-237d8",
+      storageBucket: "topluluk-237d8.firebasestorage.app",
+      messagingSenderId: "681170511591",
+      appId: "1:681170511591:web:36a38a2dc964f2aa8b2442",
+      measurementId: "G-1JTNH56RC9"
+    };
 
-<script>
-  // Firebase yapılandırmanız
-  const firebaseConfig = {
-    apiKey: "AIzaSyA9Vtxy4hUEssyC3rcmhTZp8u8S4hFooFs",
-    authDomain: "ogrencitoplulugi.firebaseapp.com",
-    projectId: "ogrencitoplulugi",
-    storageBucket: "ogrencitoplulugi.firebasestorage.app",
-    messagingSenderId: "681905707339",
-    appId: "1:681905707339:web:ac0c0cb2b874bb7c85b0ce",
-    measurementId: "G-QTMBL4Z9L3"
-  };
+    // Firebase'i başlat
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
-  // Firebase'i başlat
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-  // Duyuru ekleme fonksiyonu
-  async function duyuruEkle() {
-    const mesaj = document.getElementById('mesajInput').value.trim();
-    if (mesaj === "") {
-      alert("Lütfen duyuru yazın!");
-      return;
+    // Kayıt fonksiyonu
+    function register() {
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Kayıt başarılı! Hoşgeldiniz: " + userCredential.user.email);
+        })
+        .catch((error) => {
+          alert("Hata: " + error.message);
+        });
     }
-    try {
-      await db.collection("duyurular").add({
-        mesaj: mesaj,
-        tarih: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      document.getElementById('mesajInput').value = "";
-      duyurularıGetir();
-    } catch (e) {
-      console.error("Hata oluştu:", e);
-      alert("Hata oluştu: " + e.message);
+
+    // Giriş fonksiyonu
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          alert("Giriş başarılı! Hoşgeldiniz: " + userCredential.user.email);
+        })
+        .catch((error) => {
+          alert("Hata: " + error.message);
+        });
     }
-  }
-
-  // Duyuruları getir ve listele
-  async function duyurularıGetir() {
-    const liste = document.getElementById('duyurular');
-    liste.innerHTML = "";
-    try {
-      const q = db.collection("duyurular").orderBy("tarih", "desc");
-      const querySnapshot = await q.get();
-      querySnapshot.forEach((doc) => {
-        const duyuru = doc.data();
-        const li = document.createElement('li');
-        const tarih = duyuru.tarih ? duyuru.tarih.toDate().toLocaleString() : "Zaman bilinmiyor";
-        li.innerHTML = `<span>${duyuru.mesaj}</span><small>${tarih}</small>`;
-        liste.appendChild(li);
-      });
-    } catch (e) {
-      console.error("Duyuruları getirirken hata oluştu:", e);
-    }
-  }
-
-  // Sayfa yüklendiğinde duyuruları getir
-  window.onload = duyurularıGetir;
-</script>
-
+  </script>
 </body>
 </html>
