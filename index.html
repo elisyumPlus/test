@@ -1,64 +1,108 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8" />
-  <title>Firebaddddse Kullanıcı Girişi</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Supabase Kullanıcı Giriş ve Kayıt</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
+  .container { max-width: 400px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
+  h2 { text-align: center; }
+  .hidden { display: none; }
+  input { width: 100%; padding: 8px; margin: 8px 0; }
+  button { width: 100%; padding: 10px; margin: 8px 0; cursor: pointer; }
+  #welcome { text-align: center; }
+</style>
 </head>
 <body>
-  <h2>Kayıt Ol</h2>
-  <input type="email" id="registerEmail" placeholder="E-posta" /><br/><br/>
-  <input type="password" id="registerPassword" placeholder="Şifre" /><br/><br/>
-  <button onclick="register()">Kayıt Ol</button>
 
-  <h2>Giriş Yap</h2>
-  <input type="email" id="loginEmail" placeholder="E-posta" /><br/><br/>
-  <input type="password" id="loginPassword" placeholder="Şifre" /><br/><br/>
-  <button onclick="login()">Giriş Yap</button>
+<div class="container" id="auth-section">
+  <h2>Kullanıcı Giriş ve Kayıt</h2>
+  <div id="register-section">
+    <h3>Kayıt Ol</h3>
+    <input type="email" id="register-email" placeholder="E-posta" />
+    <input type="password" id="register-password" placeholder="Şifre" />
+    <button onclick="register()">Kayıt Ol</button>
+  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+  <div id="login-section">
+    <h3>Giriş Yap</h3>
+    <input type="email" id="login-email" placeholder="E-posta" />
+    <input type="password" id="login-password" placeholder="Şifre" />
+    <button onclick="login()">Giriş Yap</button>
+  </div>
+</div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBnFnFj11kET9KXmzCGq0zx2CQ4fjE3kXg",
-      authDomain: "topluluk-237d8.firebaseapp.com",
-      projectId: "topluluk-237d8",
-      storageBucket: "topluluk-237d8.appspot.com",
-      messagingSenderId: "681170511591",
-      appId: "1:681170511591:web:36a38a2dc964f2aa8b2442",
-      measurementId: "G-1JTNH56RC9"
-    };
+<div class="container hidden" id="main-section">
+  <h2>Hoşgeldiniz!</h2>
+  <div id="welcome"></div>
+  <button onclick="logout()">Çıkış Yap</button>
+</div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+<!-- Supabase JS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
+<script>
+  const supabaseUrl = 'https://lvwvxnbxkrjrlfgtvkbn.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2d3Z4bmJ4a3JqcmxmZ3R2a2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzNTI1MzIsImV4cCI6MjA3NjkyODUzMn0.VZho262SFIfCZWNIsU-FkEl-OHWzO4CQ_OUQ3jGkGsI';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    window.register = () => {
-      const email = document.getElementById('registerEmail').value;
-      const password = document.getElementById('registerPassword').value;
+  const authSection = document.getElementById('auth-section');
+  const mainSection = document.getElementById('main-section');
+  const welcomeDiv = document.getElementById('welcome');
 
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          alert("Kayıt başarılı! Hoşgeldiniz: " + userCredential.user.email);
-          window.location.href = "anaSayfa.html";
-        })
-        .catch((error) => {
-          alert("Hata: " + error.message);
-        });
-    };
+  async function register() {
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const { user, error } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      alert('Kayıt hatası: ' + error.message);
+    } else {
+      alert('Kayıt başarılı! Giriş yapabilirsiniz.');
+      showLogin();
+    }
+  }
 
-    window.login = () => {
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
+  async function login() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    const { user, error } = await supabase.auth.signIn({ email, password });
+    if (error) {
+      alert('Giriş hatası: ' + error.message);
+    } else {
+      showMain(user);
+    }
+  }
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          alert("Giriş başarılı! Hoşgeldiniz: " + userCredential.user.email);
-          window.location.href = "anaSayfa.html";
-        })
-        .catch((error) => {
-          alert("Hata: " + error.message);
-        });
-    };
-  </script>
+  async function checkAuth() {
+    const user = supabase.auth.user();
+    if (user) {
+      showMain(user);
+    } else {
+      showLogin();
+    }
+  }
+
+  function showLogin() {
+    authSection.classList.remove('hidden');
+    mainSection.classList.add('hidden');
+  }
+
+  function showMain(user) {
+    authSection.classList.add('hidden');
+    mainSection.classList.remove('hidden');
+    welcomeDiv.innerText = `Hoşgeldiniz, ${user.email}!`;
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    showLogin();
+  }
+
+  // Sayfa yüklendiğinde oturum kontrolü
+  window.onload = () => {
+    checkAuth();
+  };
+</script>
+
 </body>
 </html>
