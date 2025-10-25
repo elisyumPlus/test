@@ -45,6 +45,8 @@
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           alert("Kayıt başarılı! Hoşgeldiniz: " + userCredential.user.email);
+          // Başarılıysa yönlendir
+          window.location.href = "anaSayfa.html"; // yönlendirme sayfası
         })
         .catch((error) => {
           alert("Hata: " + error.message);
@@ -59,6 +61,8 @@
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           alert("Giriş başarılı! Hoşgeldiniz: " + userCredential.user.email);
+          // Başarılıysa yönlendir
+          window.location.href = "anaSayfa.html"; // yönlendirme sayfası
         })
         .catch((error) => {
           alert("Hata: " + error.message);
