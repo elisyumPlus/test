@@ -2,10 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
-  <title>Firebase Kullanıcı Kaydı ve Giriş</title>
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <title>Firebaddddse Kullanıcı Girişi</title>
 </head>
 <body>
   <h2>Kayıt Ol</h2>
@@ -18,56 +15,50 @@
   <input type="password" id="loginPassword" placeholder="Şifre" /><br/><br/>
   <button onclick="login()">Giriş Yap</button>
 
-  <script>
-    // Firebase yapılandırması
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
     const firebaseConfig = {
       apiKey: "AIzaSyBnFnFj11kET9KXmzCGq0zx2CQ4fjE3kXg",
       authDomain: "topluluk-237d8.firebaseapp.com",
       projectId: "topluluk-237d8",
-      storageBucket: "topluluk-237d8.firebasestorage.app",
+      storageBucket: "topluluk-237d8.appspot.com",
       messagingSenderId: "681170511591",
       appId: "1:681170511591:web:36a38a2dc964f2aa8b2442",
       measurementId: "G-1JTNH56RC9"
     };
 
-    // Firebase'i başlat
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // Kayıt fonksiyonu
-    function register() {
+    window.register = () => {
       const email = document.getElementById('registerEmail').value;
       const password = document.getElementById('registerPassword').value;
 
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           alert("Kayıt başarılı! Hoşgeldiniz: " + userCredential.user.email);
-          // Başarılıysa yönlendir
-          window.location.href = "anaSayfa.html"; // yönlendirme sayfası
+          window.location.href = "anaSayfa.html";
         })
         .catch((error) => {
           alert("Hata: " + error.message);
         });
-    }
+    };
 
-    // Giriş fonksiyonu
-    function login() {
+    window.login = () => {
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
 
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           alert("Giriş başarılı! Hoşgeldiniz: " + userCredential.user.email);
-          // Başarılıysa yönlendir
-          window.location.href = "anaSayfa.html"; // yönlendirme sayfası
+          window.location.href = "anaSayfa.html";
         })
         .catch((error) => {
           alert("Hata: " + error.message);
         });
-    }
+    };
   </script>
 </body>
 </html>
