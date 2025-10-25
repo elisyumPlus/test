@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Supssabase Kullanıcsssssssı Giriş ve Kayıt</title>
+<title>Suddpabase Kullanıcı Kayıt Giriş</title>
 <style>
   body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
   .container { max-width: 400px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; }
@@ -39,12 +39,14 @@
   <button onclick="logout()">Çıkış Yap</button>
 </div>
 
-<!-- Supabase SDK -->
+<!-- Supabase SDK'sını en üstte yükleyin -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
 <script>
-  // Supabase ile bağlantı
+  // Supabase ile bağlantıyı hemen yapın
   const supabaseUrl = 'https://lvwvxnbxkrjrlfgtvkbn.supabase.co';
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2d3Z4bmJ4a3JqcmxmZ3R2a2JuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjEzNTI1MzIsImV4cCI6MjA3NjkyODUzMn0.VZho262SFIfCZWNIsU-FkEl-OHWzO4CQ_OUQ3jGkGsI';
+
+  // Bu satırdan sonra supabase nesnesi kullanılabilir
   const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
   const authSection = document.getElementById('auth-section');
